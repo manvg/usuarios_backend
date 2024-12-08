@@ -17,6 +17,7 @@ public class WebSecurityConfig {
         http
             .authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/api/authentication/login").permitAll()
+                .requestMatchers("/api/usuarios/**").permitAll()
                 .anyRequest().authenticated())
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
@@ -24,4 +25,3 @@ public class WebSecurityConfig {
         return http.build();
     }
 }
-

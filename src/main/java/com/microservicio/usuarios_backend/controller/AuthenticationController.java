@@ -47,4 +47,12 @@ public class AuthenticationController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(authResponse);
         }
     }
+
+    @PostMapping("/validate-token")
+    public ResponseEntity<?> validateToken(@RequestBody String token) {
+        if (authenticationService.validateToken(token)) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
 }

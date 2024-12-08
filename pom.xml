@@ -92,7 +92,7 @@
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 
-		<!-- Dependencias necesarias para JWT (opcional, si usas JWT para la autenticación) -->
+		<!-- Dependencias para JWT -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-api</artifactId>
