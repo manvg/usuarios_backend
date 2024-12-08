@@ -15,15 +15,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.microservicio.usuarios_backend.model.dto.LoginDto;
-import com.microservicio.usuarios_backend.model.dto.ResponseModel;
 import com.microservicio.usuarios_backend.model.entities.Usuario;
-import com.microservicio.usuarios_backend.service.UsuarioService;
+import com.microservicio.usuarios_backend.service.usuario.UsuarioService;
 
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/usuarios")
+@RequestMapping("/api/usuarios")
 public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
@@ -51,21 +49,6 @@ public class UsuarioController {
 
         var response = usuarioService.createUsuario(usuario);
         return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
-
-    //Login usuario
-    @PostMapping("/login")
-    public ResponseEntity<Object> login(@RequestBody @Valid LoginDto loginDto) {
-        String email = loginDto.getEmail();
-        String password = loginDto.getContrasena();
-
-        //Validar el usuario y contraseña
-        ResponseModel response = usuarioService.validarLogin(email, password);
-        if (response.getStatus()) {
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        }else{
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-        }
     }
 
     //---------MÉTODOS PUT---------//

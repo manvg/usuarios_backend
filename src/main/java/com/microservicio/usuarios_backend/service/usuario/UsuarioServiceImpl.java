@@ -1,4 +1,4 @@
-package com.microservicio.usuarios_backend.service;
+package com.microservicio.usuarios_backend.service.usuario;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.microservicio.usuarios_backend.model.dto.AuthenticationDto;
 import com.microservicio.usuarios_backend.model.dto.ResponseModel;
 import com.microservicio.usuarios_backend.model.entities.Usuario;
 import com.microservicio.usuarios_backend.repository.UsuarioRepository;
@@ -55,15 +56,17 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public ResponseModel validarLogin(String email, String contrasena){
+    public AuthenticationDto validarLogin(String email, String contrasena){
         boolean status = false;
         String message = "";
+        Usuario usuarioResponse = null;
 
         var usuario = usuarioRepository.findByemail(email);
         if (!usuario.isEmpty()) {
             if (usuario.get().getcontrasena().equals(contrasena)) {
                 status = true;
                 message = "Login realizado con éxito.";
+                usuarioResponse = usuario.get();
             }else{
                 message = "Usuario y/o contraseña no válidos.";
             }
@@ -72,7 +75,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         }
        
 
-        return new ResponseModel(status, message);
+        return new AuthenticationDto(status, message, usuarioResponse);
     }
 
     //---------PUT---------//
