@@ -10,8 +10,10 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "usuario")
@@ -32,7 +34,6 @@ public class Usuario {
     private String apellidoPaterno;
 
     @Column(name = "apellido_materno")
-    
     @NotNull
     @Size(min = 2, max = 50, message = "Debe tener entre 2 y 100 caracteres")
     private String apellidoMaterno;
@@ -53,11 +54,15 @@ public class Usuario {
     @Size(min = 9, max = 9, message = "Debe tener 9 dígitos")
     @Pattern(regexp = "\\d{9}", message = "Debe contener solo dígitos") 
     private String telefono;
-    
+
     @Column(name = "direccion")
     @NotNull
     @Size(min = 2, max = 255, message = "Debe tener entre 2 y 255 caracteres")
     private String direccion;
+
+    @Column(name = "fecha_nacimiento")
+    @Past(message = "La fecha de nacimiento debe ser una fecha pasada")
+    private LocalDate fechaNacimiento;
 
     @ManyToOne(targetEntity = Perfil.class)
     @JoinColumn(name = "id_perfil")
@@ -84,7 +89,7 @@ public class Usuario {
         return email;
     }
 
-    public String getcontrasena() {
+    public String getContrasena() {
         return contrasena;
     }
 
@@ -94,6 +99,10 @@ public class Usuario {
 
     public String getDireccion() {
         return direccion;
+    }
+
+    public LocalDate getFechaNacimiento() {
+        return fechaNacimiento;
     }
 
     public Perfil getPerfil() {
@@ -120,7 +129,7 @@ public class Usuario {
         this.email = email;
     }
 
-    public void setcontrasena(String contrasena) {
+    public void setContrasena(String contrasena) {
         this.contrasena = contrasena;
     }
 
@@ -132,9 +141,11 @@ public class Usuario {
         this.direccion = direccion;
     }
 
+    public void setFechaNacimiento(LocalDate fechaNacimiento) {
+        this.fechaNacimiento = fechaNacimiento;
+    }
+
     public void setPerfil(Perfil perfil) {
         this.perfil = perfil;
     }
 }
-
-

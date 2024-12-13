@@ -63,7 +63,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
         var usuario = usuarioRepository.findByemail(email);
         if (!usuario.isEmpty()) {
-            if (usuario.get().getcontrasena().equals(contrasena)) {
+            if (usuario.get().getContrasena().equals(contrasena)) {
                 status = true;
                 message = "Login realizado con éxito.";
                 usuarioResponse = usuario.get();
@@ -92,7 +92,7 @@ public class UsuarioServiceImpl implements UsuarioService {
             usuario.setNombre(objUsuario.getNombre());
             usuario.setPerfil(objUsuario.getPerfil());
             usuario.setTelefono(objUsuario.getTelefono());
-            usuario.setcontrasena(objUsuario.getcontrasena());
+            usuario.setContrasena(objUsuario.getContrasena());
             usuario.setIdUsuario(id);
             //Actualizar usuario
             usuarioRepository.save(usuario);

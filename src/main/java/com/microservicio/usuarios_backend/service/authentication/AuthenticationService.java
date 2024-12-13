@@ -9,6 +9,7 @@ import com.microservicio.usuarios_backend.config.Constants;
 import com.microservicio.usuarios_backend.model.entities.Usuario;
 
 import java.security.Key;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 @Service
@@ -32,6 +33,10 @@ public class AuthenticationService {
             .claim("email", usuario.getEmail())
             .claim("perfil", usuario.getPerfil().getNombre())
             .claim("nombre", usuario.getNombre())
+            .claim("apellidos", usuario.getApellidoPaterno())
+            .claim("fechaNacimiento", usuario.getFechaNacimiento().format(DateTimeFormatter.ISO_LOCAL_DATE))
+            .claim("direccion", usuario.getDireccion())
+            .claim("telefono", usuario.getTelefono())
             .setIssuedAt(new Date())
             .setExpiration(new Date(System.currentTimeMillis() + Constants.TOKEN_EXPIRATION_TIME)) 
             .signWith(key, SignatureAlgorithm.HS256)
