@@ -45,7 +45,7 @@ public class Usuario {
     private String email;
 
     @Column(name = "contrasena")
-    @NotNull
+    // @NotNull
     @Size(min = 6, max = 20, message = "La contraseña debe contener entre 6 y 20 caracteres con al menos una letra y un número")
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,20}$", message = "La contraseña debe contener entre 6 y 20 caracteres con al menos una letra y un número")
     private String contrasena;

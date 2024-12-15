@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.microservicio.usuarios_backend.model.dto.AuthenticationDto;
+import com.microservicio.usuarios_backend.model.dto.DatosPersonalesDto;
 import com.microservicio.usuarios_backend.model.dto.ResponseModel;
 import com.microservicio.usuarios_backend.model.entities.Usuario;
 import com.microservicio.usuarios_backend.repository.UsuarioRepository;
@@ -103,11 +104,58 @@ public class UsuarioServiceImpl implements UsuarioService {
         return response;
     }
 
+
+    @Override
+    public ResponseModel updateDatosPersonales(Integer id, DatosPersonalesDto datosPersonales) {
+        ResponseModel response;
+        var usuarioExiste = usuarioRepository.findById(id);
+        if (!usuarioExiste.isEmpty()) {
+            Usuario usuario = usuarioExiste.get();
+            usuario.setApellidoMaterno(datosPersonales.getApellidoMaterno());
+            usuario.setApellidoPaterno(datosPersonales.getApellidoPaterno());
+            usuario.setDireccion(datosPersonales.getDireccion());
+            usuario.setNombre(datosPersonales.getNombre());
+            usuario.setTelefono(datosPersonales.getTelefono());
+            usuario.setFechaNacimiento(datosPersonales.getFechaNacimiento());
+            usuario.setIdUsuario(id);
+            //Actualizar usuario
+            usuarioRepository.save(usuario);
+            response = new ResponseModel(true, "Datos actualizados con éxito. Id: " + id);
+        }else{
+            response = new ResponseModel(true, "Usuario no encontrado. Id:" + id);
+        }
+
+        return response;
+    }
+
+    @Override
+    public ResponseModel cambiarContrasena(Integer idUsuario, String nuevaContrasena) {
+        var usuarioExiste = usuarioRepository.findById(idUsuario);
+        if (!usuarioExiste.isEmpty()) {
+            var usuario = usuarioExiste.get();
+            usuario.setContrasena(nuevaContrasena);
+            usuarioRepository.save(usuario);
+            return new ResponseModel(true, "Contraseña actualizado con éxito");
+        }else{
+            return new ResponseModel(false, "Usuario no encontrado");
+        }
+    }
     //---------DELETE---------//
     @Override
     public ResponseModel deleteUsuario(Integer id){
         if (usuarioRepository.existsById(id)) {
             usuarioRepository.deleteById(id);
+            return new ResponseModel(true, "Usuario eliminado con éxito");
+        }else{
+            return new ResponseModel(false, "El usuario ingresado no existe");
+        }
+    }
+
+    @Override
+    public ResponseModel deleteUsuarioByEmail(String email){
+        var usuario = usuarioRepository.findByemail(email);
+        if (!usuario.isEmpty()) {
+            usuarioRepository.deleteById(usuario.get().getIdUsuario());
             return new ResponseModel(true, "Usuario eliminado con éxito");
         }else{
             return new ResponseModel(false, "El usuario ingresado no existe");

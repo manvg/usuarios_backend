@@ -36,7 +36,7 @@ public class AuthenticationController {
 
                 return ResponseEntity.ok(authResponse);
             } else {
-                AuthResponse authResponse = new AuthResponse(false, null, "Usuario y contraseña no válidos");
+                AuthResponse authResponse = new AuthResponse(false, null, "Correo electrónico y/o contraseña no válidos");
 
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(authResponse);
             }

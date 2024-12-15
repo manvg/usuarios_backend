@@ -1,5 +1,6 @@
 package com.microservicio.usuarios_backend.service.authentication;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -31,9 +32,10 @@ public class AuthenticationService {
             .setSubject(usuario.getEmail())
             .claim("id", usuario.getIdUsuario())
             .claim("email", usuario.getEmail())
-            .claim("perfil", usuario.getPerfil().getNombre())
+            .claim("perfil", usuario.getPerfil())
             .claim("nombre", usuario.getNombre())
-            .claim("apellidos", usuario.getApellidoPaterno())
+            .claim("apellidoPaterno", usuario.getApellidoPaterno())
+            .claim("apellidoMaterno", usuario.getApellidoMaterno())
             .claim("fechaNacimiento", usuario.getFechaNacimiento().format(DateTimeFormatter.ISO_LOCAL_DATE))
             .claim("direccion", usuario.getDireccion())
             .claim("telefono", usuario.getTelefono())
@@ -54,5 +56,15 @@ public class AuthenticationService {
 
     public String getSubject(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public Integer getIdFromToken(String token) {
+        Claims claims = Jwts.parserBuilder()
+            .setSigningKey(key)
+            .build()
+            .parseClaimsJws(token)
+            .getBody();
+
+        return claims.get("id", Integer.class);
     }
 }
