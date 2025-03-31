@@ -164,7 +164,16 @@ public class UsuarioServiceImpl implements UsuarioService {
             var usuario = usuarioExiste.get();
             usuario.setContrasena(nuevaContrasena);
             usuarioRepository.save(usuario);
-            return new ResponseModel(true, "Contraseña actualizado con éxito");
+
+            //payload para la funcion
+            Map<String, Object> payload = new HashMap<>();
+            payload.put("email", usuario.getEmail());
+            payload.put("userId", usuario.getIdUsuario());
+
+            //llamada func
+            String notifiacionResponse = notificacionIntegrationService.notificarCambioContrasena(payload);
+
+            return new ResponseModel(true, "Contraseña actualizada con éxito. Notif: " + notifiacionResponse);
         }else{
             return new ResponseModel(false, "Usuario no encontrado");
         }
