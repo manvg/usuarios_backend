@@ -1,6 +1,8 @@
 package com.microservicio.usuarios_backend.service.usuario;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +13,17 @@ import com.microservicio.usuarios_backend.model.dto.DatosPersonalesDto;
 import com.microservicio.usuarios_backend.model.dto.ResponseModel;
 import com.microservicio.usuarios_backend.model.entities.Usuario;
 import com.microservicio.usuarios_backend.repository.UsuarioRepository;
+import com.microservicio.usuarios_backend.service.functions.NotificacionIntegrationService;
 
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
+    
+    @Autowired
+    private NotificacionIntegrationService notificacionIntegrationService;
 
+    
     //---------GET---------//
     @Override
     public List<Usuario> getAllUsuarios(){
@@ -84,8 +91,12 @@ public class UsuarioServiceImpl implements UsuarioService {
     public ResponseModel updateUsuario(Integer id, Usuario objUsuario){
         ResponseModel response;
         var usuarioExiste = usuarioRepository.findById(id);
-        if (!usuarioExiste.isEmpty()) {
+        if (usuarioExiste.isPresent()) {
             Usuario usuario = usuarioExiste.get();
+
+            //capturamos el rol actual antes de la actualizacion
+            String oldRole = usuario.getPerfil().getNombre();
+
             usuario.setApellidoMaterno(objUsuario.getApellidoMaterno());
             usuario.setApellidoPaterno(objUsuario.getApellidoPaterno());
             usuario.setDireccion(objUsuario.getDireccion());
@@ -95,9 +106,27 @@ public class UsuarioServiceImpl implements UsuarioService {
             usuario.setTelefono(objUsuario.getTelefono());
             usuario.setContrasena(objUsuario.getContrasena());
             usuario.setIdUsuario(id);
+
             //Actualizar usuario
             usuarioRepository.save(usuario);
-            response = new ResponseModel(true, "Usuario actualizado con éxito. Id: " + id);
+
+            //capturamos el nuevo rol post-actualizacion
+            String newRole = usuario.getPerfil().getNombre();
+
+            //si el rol cambia llamamos a la func de notificacion
+            if (!oldRole.equals(newRole)) {
+                Map<String, Object> payload = new HashMap<>();
+                payload.put("email", usuario.getEmail());
+                payload.put("oldRole", oldRole);
+                payload.put("newRole", newRole);
+                payload.put("userId", usuario.getIdUsuario());
+
+                String notificacionResponse = notificacionIntegrationService.notificarCambioRol(payload);
+                
+                response = new ResponseModel(true, "Usuario actualizado con éxito. Notificación: " + notificacionResponse);
+            } else {
+                response = new ResponseModel(true, "Usuario actualizado con éxito. Rol sin cambios.");
+            }
         }else{
             response = new ResponseModel(true, "Usuario no encontrado. Id:" + id);
         }
@@ -135,7 +164,16 @@ public class UsuarioServiceImpl implements UsuarioService {
             var usuario = usuarioExiste.get();
             usuario.setContrasena(nuevaContrasena);
             usuarioRepository.save(usuario);
-            return new ResponseModel(true, "Contraseña actualizado con éxito");
+
+            //payload para la funcion
+            Map<String, Object> payload = new HashMap<>();
+            payload.put("email", usuario.getEmail());
+            payload.put("userId", usuario.getIdUsuario());
+
+            //llamada func
+            String notifiacionResponse = notificacionIntegrationService.notificarCambioContrasena(payload);
+
+            return new ResponseModel(true, "Contraseña actualizada con éxito. Notif: " + notifiacionResponse);
         }else{
             return new ResponseModel(false, "Usuario no encontrado");
         }
