@@ -13,7 +13,7 @@ public class Constants {
     public static final String LOGIN_URL = "/authentication/login";
     public static final String HEADER_AUTHORIZATION_KEY = "Authorization";
     public static final String TOKEN_BEARER_PREFIX = "Bearer ";
-    public static final String ISSUER_INFO = "BACKEND_RECETAS";
+    public static final String ISSUER_INFO = "BACKEND";
     public static final String SUPER_SECRET_KEY = "#E@M%R!&EGD%srHG823sAK3&gBi&U4Q7";//Clave secreta para firmar el token
     public static final long TOKEN_EXPIRATION_TIME = 86_400_000L; // 1 día
 
