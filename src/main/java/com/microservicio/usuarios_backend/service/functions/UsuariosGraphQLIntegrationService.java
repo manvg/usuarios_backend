@@ -1,5 +1,7 @@
 package com.microservicio.usuarios_backend.service.functions;
 
+import java.nio.charset.StandardCharsets;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +19,7 @@ public class UsuariosGraphQLIntegrationService {
     private final RestTemplate restTemplate;
     private final ObjectMapper mapper;
 
-    private final String functionUrl = "https://<REEMPLAZAR>.azurewebsites.net/api/usuariosPorPerfilGraphQL";
+    private final String functionUrl = "https://grupo2.azurewebsites.net/api/usuariosPorPerfilGraphQL";
 
     public UsuariosGraphQLIntegrationService() {
         this.restTemplate = new RestTemplate();
@@ -26,9 +28,10 @@ public class UsuariosGraphQLIntegrationService {
 
     public List<Usuario> obtenerUsuariosPorPerfil(String nombrePerfil) {
         try {
-            //consulta GraphQL
-            String query = String.format("{ usuariosPorPerfil(nombrePerfil: \"%s\") { idUsuario nombre correo } }", nombrePerfil);
-
+            // Cargar la consulta desde el archivo .graphql
+            String rawQuery = cargarQueryDesdeArchivo("graphql/usuariosPorPerfil.graphql");
+            String query = String.format(rawQuery, nombrePerfil);
+            
             Map<String, String> payload = Map.of("query", query);
 
             HttpHeaders headers = new HttpHeaders();
@@ -42,12 +45,23 @@ public class UsuariosGraphQLIntegrationService {
             JsonNode root = mapper.readTree(response.getBody());
             JsonNode usuariosNode = root.path("data").path("usuariosPorPerfil");
 
-            //Mapear
+            //Mapear y retornar resultado
             return mapper.readerForListOf(Usuario.class).readValue(usuariosNode);
 
         } catch (Exception e) {
             e.printStackTrace();
             return List.of();
+        }
+    }
+
+    private String cargarQueryDesdeArchivo(String path) {
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream(path)) {
+            if (is == null) {
+                throw new RuntimeException("No se encontró el archivo: " + path);
+            }
+            return new String(is.readAllBytes(), StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al leer archivo GraphQL: " + path, e);
         }
     }
 }
