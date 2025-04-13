@@ -1,4 +1,4 @@
-FROM eclipse-temurin:22-jdk AS buildstage
+FROM eclipse-temurin:21-jdk AS buildstage
 
 RUN apt-get update && apt-get install -y maven
 
@@ -12,7 +12,7 @@ ENV TNS_ADMIN=/app/wallet
 
 RUN mvn clean package -DskipTests=true
 
-FROM eclipse-temurin:22-jdk 
+FROM eclipse-temurin:21-jdk 
 
 COPY --from=buildstage /app/target/usuarios_backend-0.0.1-SNAPSHOT.jar /app/usuarios_backend.jar
 
