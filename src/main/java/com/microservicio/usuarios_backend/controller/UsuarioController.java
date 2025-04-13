@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.microservicio.usuarios_backend.model.dto.DatosPersonalesDto;
@@ -134,6 +135,20 @@ public class UsuarioController {
         }
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+
+     //---------MÉTODOS GRAPHQL---------//
+    //@GetMapping("/porPerfil")
+    // public ResponseEntity<?> getUsuariosPorPerfil(@RequestParam String nombrePerfil) {
+    //     try {
+    //         var usuarios = usuarioService.getUsuariosPorPerfil(nombrePerfil);
+    //         return ResponseEntity.ok(usuarios);
+    //     } catch (Exception e) {
+    //         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+    //                 .body("Error al obtener usuarios por perfil: " + e.getMessage());
+    //     }
+    // }
+
 }
 
 
