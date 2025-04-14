@@ -20,7 +20,7 @@ public interface UsuarioService {
     ResponseModel deleteUsuarioByEmail(String email);
     AuthenticationDto validarLogin(String email, String contrasena);
     ResponseModel cambiarContrasena(Integer idUsuario, String nuevaContrasena);
-    List<Usuario> getUsuariosPorPerfil(String nombrePerfil);//GraphQL
+    List<Usuario> getUsuariosPorPerfil(String perfil);//GraphQL
 
 }
 

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.microservicio.usuarios_backend.model.dto.DatosPersonalesDto;
@@ -44,6 +45,12 @@ public class UsuarioController {
     public Optional<Usuario> getUsuarioById(@PathVariable Integer id){
         var usuario = usuarioService.getUsuarioById(id);
         return usuario;
+    }
+
+    // quedaria onda /api/usuarios?perfil=ADMIN
+    @GetMapping(params = "perfil")
+    public List<Usuario> getUsuariosPorPerfil(@RequestParam String perfil) {
+        return usuarioService.getUsuariosPorPerfil(perfil.toUpperCase());
     }
 
     //---------MÉTODOS POST---------//
