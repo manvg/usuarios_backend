@@ -1,5 +1,6 @@
 HELP.md
 target/
+/target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
@@ -32,3 +33,4 @@ build/
 ### VS Code ###
 .vscode/
 .qodo
+target/classes/com/microservicio/usuarios_backend/config/WebSecurityConfig.class
