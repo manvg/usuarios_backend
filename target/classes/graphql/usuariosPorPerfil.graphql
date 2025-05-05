@@ -1,7 +1,0 @@
-{
-  usuariosPorPerfil(nombrePerfil: "%s") {
-    idUsuario
-    nombre
-    correo
-  }
-}
