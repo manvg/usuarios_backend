@@ -13,6 +13,7 @@ import com.microservicio.usuarios_backend.model.dto.DatosPersonalesDto;
 import com.microservicio.usuarios_backend.model.dto.ResponseModel;
 import com.microservicio.usuarios_backend.model.entities.Usuario;
 import com.microservicio.usuarios_backend.repository.UsuarioRepository;
+import com.microservicio.usuarios_backend.service.events.EventGridIntegrationService;
 import com.microservicio.usuarios_backend.service.functions.NotificacionIntegrationService;
 
 @Service
@@ -20,8 +21,11 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
     
+    // @Autowired
+    // private NotificacionIntegrationService notificacionIntegrationService;
+
     @Autowired
-    private NotificacionIntegrationService notificacionIntegrationService;
+    private EventGridIntegrationService eventGridIntegrationService;
 
     
     //---------GET---------//
@@ -121,9 +125,12 @@ public class UsuarioServiceImpl implements UsuarioService {
                 payload.put("newRole", newRole);
                 payload.put("userId", usuario.getIdUsuario());
 
-                String notificacionResponse = notificacionIntegrationService.notificarCambioRol(payload);
+                //Se comenta llamada hacia Azure Function. En su reemplazo se utilizará Event Grid
+                //String notificacionResponse = notificacionIntegrationService.notificarCambioRol(payload);
                 
-                response = new ResponseModel(true, "Usuario actualizado con éxito. Notificación: " + notificacionResponse);
+                eventGridIntegrationService.notificarCambioRol(payload);
+
+                response = new ResponseModel(true, "Usuario actualizado con éxito. Evento de cambio de rol publicado");
             } else {
                 response = new ResponseModel(true, "Usuario actualizado con éxito. Rol sin cambios.");
             }
@@ -170,10 +177,13 @@ public class UsuarioServiceImpl implements UsuarioService {
             payload.put("email", usuario.getEmail());
             payload.put("userId", usuario.getIdUsuario());
 
-            //llamada func
-            String notifiacionResponse = notificacionIntegrationService.notificarCambioContrasena(payload);
+            //Se comenta llamada hacia Azure Function. En su reemplazo se utilizará Event Grid
+            //String notifiacionResponse = notificacionIntegrationService.notificarCambioContrasena(payload);
 
-            return new ResponseModel(true, "Contraseña actualizada con éxito. Notif: " + notifiacionResponse);
+            // Publicación del evento en Event Grid
+            eventGridIntegrationService.notificarCambioContrasena(payload);
+
+            return new ResponseModel(true, "Contraseña actualizada con éxito. Evento publicado.");
         }else{
             return new ResponseModel(false, "Usuario no encontrado");
         }

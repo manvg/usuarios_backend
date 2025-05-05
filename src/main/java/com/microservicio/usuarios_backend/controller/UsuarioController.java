@@ -47,7 +47,6 @@ public class UsuarioController {
         return usuario;
     }
 
-    // quedaria onda /api/usuarios?perfil=ADMIN
     @GetMapping(params = "perfil")
     public List<Usuario> getUsuariosPorPerfil(@RequestParam String perfil) {
         return usuarioService.getUsuariosPorPerfil(perfil.toUpperCase());
