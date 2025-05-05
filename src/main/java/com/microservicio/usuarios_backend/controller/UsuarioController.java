@@ -47,6 +47,11 @@ public class UsuarioController {
         return usuario;
     }
 
+    @GetMapping(params = "perfil")
+    public List<Usuario> getUsuariosPorPerfil(@RequestParam String perfil) {
+        return usuarioService.getUsuariosPorPerfil(perfil.toUpperCase());
+    }
+
     //---------MÉTODOS POST---------//
     @PostMapping
     public ResponseEntity<Object> createUsuario(@RequestBody @Valid Usuario usuario){

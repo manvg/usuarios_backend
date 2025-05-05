@@ -212,38 +212,43 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     //---------GRAPHQL---------//
 
+    // @Override
+    // public List<Usuario> getUsuariosPorPerfil(String nombrePerfil) {
+    //     // Construir la consulta GraphQL como string
+    //     String query = String.format("{ usuariosPorPerfil(nombrePerfil: \"%s\") { idUsuario nombre correo } }", nombrePerfil);
+
+    //     Map<String, String> body = Map.of("query", query);
+
+    //     // Cliente HTTP básico con Java 11
+    //     try {
+    //         var client = java.net.http.HttpClient.newHttpClient();
+    //         var request = java.net.http.HttpRequest.newBuilder()
+    //                 .uri(new java.net.URI("https://<URL-FUNCTION>.azurewebsites.net/api/usuariosPorPerfilGraphQL")) // ⚠️ REEMPLAZA por tu URL real
+    //                 .header("Content-Type", "application/json")
+    //                 .POST(java.net.http.HttpRequest.BodyPublishers.ofString(
+    //                         new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(body)))
+    //                 .build();
+
+    //         var response = client.send(request, java.net.http.HttpResponse.BodyHandlers.ofString());
+
+    //         // Mapear respuesta JSON a lista de Usuario
+    //         var mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+    //         var jsonResponse = mapper.readTree(response.body());
+
+    //         // Obtener nodo "data" → "usuariosPorPerfil"
+    //         var usuariosJson = jsonResponse.path("data").path("usuariosPorPerfil");
+
+    //         // Convertir el nodo a lista de objetos Usuario
+    //         return mapper.readerForListOf(Usuario.class).readValue(usuariosJson);
+    //     } catch (Exception e) {
+    //         e.printStackTrace();
+    //         return List.of(); // Retorna lista vacía en caso de error
+    //     }
+    //}
+
     @Override
-    public List<Usuario> getUsuariosPorPerfil(String nombrePerfil) {
-        // Construir la consulta GraphQL como string
-        String query = String.format("{ usuariosPorPerfil(nombrePerfil: \"%s\") { idUsuario nombre correo } }", nombrePerfil);
-
-        Map<String, String> body = Map.of("query", query);
-
-        // Cliente HTTP básico con Java 11
-        try {
-            var client = java.net.http.HttpClient.newHttpClient();
-            var request = java.net.http.HttpRequest.newBuilder()
-                    .uri(new java.net.URI("https://<URL-FUNCTION>.azurewebsites.net/api/usuariosPorPerfilGraphQL")) // ⚠️ REEMPLAZA por tu URL real
-                    .header("Content-Type", "application/json")
-                    .POST(java.net.http.HttpRequest.BodyPublishers.ofString(
-                            new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(body)))
-                    .build();
-
-            var response = client.send(request, java.net.http.HttpResponse.BodyHandlers.ofString());
-
-            // Mapear respuesta JSON a lista de Usuario
-            var mapper = new com.fasterxml.jackson.databind.ObjectMapper();
-            var jsonResponse = mapper.readTree(response.body());
-
-            // Obtener nodo "data" → "usuariosPorPerfil"
-            var usuariosJson = jsonResponse.path("data").path("usuariosPorPerfil");
-
-            // Convertir el nodo a lista de objetos Usuario
-            return mapper.readerForListOf(Usuario.class).readValue(usuariosJson);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return List.of(); // Retorna lista vacía en caso de error
-        }
+    public List<Usuario> getUsuariosPorPerfil(String perfil) {
+        return usuarioRepository.findByPerfil_NombreIgnoreCase(perfil);
     }
 
 }
