@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.microservicio.usuarios_backend.model.dto.CambioContrasenaDto;
 import com.microservicio.usuarios_backend.model.dto.DatosPersonalesDto;
 import com.microservicio.usuarios_backend.model.dto.ResponseModel;
 import com.microservicio.usuarios_backend.model.entities.Usuario;
@@ -88,11 +89,9 @@ public class UsuarioController {
     }
 
     @PutMapping("/cambiar-contrasena")
-    public ResponseEntity<Object> cambiarContrasena(@RequestBody Map<String, String> request, HttpServletRequest httpRequest) 
+    public ResponseEntity<Object> cambiarContrasena(@RequestBody CambioContrasenaDto cambioContrasena, HttpServletRequest httpRequest) 
     {
-        String nuevaContrasena = request.get("nuevaContrasena");
-    
-        if (nuevaContrasena == null || nuevaContrasena.isEmpty()) {
+        if (cambioContrasena == null || cambioContrasena.getNuevaContrasena() == null || cambioContrasena.getNuevaContrasena().isEmpty()) {
             return ResponseEntity.badRequest().body("La nueva contraseña es obligatoria.");
         }
     
@@ -111,7 +110,7 @@ public class UsuarioController {
         Integer idUsuario = authenticationService.getIdFromToken(token);
     
         //Cambiar la contraseña
-        ResponseModel response = usuarioService.cambiarContrasena(idUsuario, nuevaContrasena);
+        ResponseModel response = usuarioService.cambiarContrasena(idUsuario, cambioContrasena.getNuevaContrasena());
     
         if (response.getStatus()) {
             return ResponseEntity.status(HttpStatus.OK).body(response);
